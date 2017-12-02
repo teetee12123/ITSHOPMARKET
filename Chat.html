@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>ระบบแชท</title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div id="" class="panel panel-default">
+            <div class="panel-body">
+                <div style="color:red;font-weight:bold; text-align:center;">ระบบแชทสอบถามสินค้า ผู้ดูแลระบบจะไม่ตอบกลับหลังมีลูกค้าทักมาสอบถามเกี่ยวกับราคาต่างๆของสินค้า</div>
+                <hr />
+                <div id="ShowMessage"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>ชื่อของผู้สนทนา</label>
+            <input type="text" id="name" value="" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>ข้อความส่งหาผู้ดูแล</label>
+            <input type="text" id="message" class="form-control"/>
+        </div>
+    </div>
+    
+
+    <script src="/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="/Scripts/jquery.signalR-2.2.2.min.js"></script>
+    <script src="/signalr/hubs"></script>
+    <script src="Scripts/bootstrap.js"></script>
+    <script>
+        $.connection.hub.start().done(function () {
+            $("#message").bind('keypress',function (e) {
+                var code = e.keyCode || e.which;
+                if (code == 13) {
+                    $.connection.chatHub.server.messageGET($("#name").val(), $("#message").val());
+                    $("#message").val('').focus();
+                }
+            })
+        })
+        $.connection.chatHub.client.messageSend = function (name, message) {
+            $("#ShowMessage").append("<li>" + name + " : " + message+"</li>")
+        };
+    </script>
+    
+</body>
+</html>
